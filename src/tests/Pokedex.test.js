@@ -42,4 +42,13 @@ describe('Check Pokedex', () => {
     const pokemonName = screen.getAllByTestId('pokemon-name');
     expect(pokemonName.length).toBe(1);
   });
+  it('Check if the filters buttons appears', () => {
+    renderWithRouter(<App />);
+    const lengthOfTypes = pokemons.reduce((types, { type }) => {
+      if (!types.includes(type)) return [...types, type];
+      return types;
+    }, []);
+    const filters = screen.getAllByTestId('pokemon-type-button');
+    expect(filters.length).toBe(lengthOfTypes.length);
+  });
 });
