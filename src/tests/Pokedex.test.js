@@ -49,6 +49,34 @@ describe('Check Pokedex', () => {
       return types;
     }, []);
     const filters = screen.getAllByTestId('pokemon-type-button');
-    expect(filters.length).toBe(lengthOfTypes.length);
+    expect(filters).toHaveLength(lengthOfTypes.length);
+    console.log(lengthOfTypes);
+    filters.forEach((filter, index) => {
+      expect(filter.textContent).toBe(lengthOfTypes[index]);
+    });
+
+    filters.forEach((type) => {
+      userEvent.click(type);
+      const pokemonsPerType = pokemons.filter((
+        pokemon,
+      ) => pokemon.type === type.textContent);
+      pokemonsPerType.forEach((pokemon) => {
+        expect(screen.getByText(pokemon.name)).toBeInTheDocument();
+        userEvent.click(screen.getByText(/próximo pokémon/i));
+        expect(screen.getByText(/all/i)).toBeInTheDocument();
+      });
+    });
+  });
+  it('check if the button all is in the document', () => {
+    renderWithRouter(<App />);
+    pokemons.forEach((pokemon) => {
+      expect(screen.getByText(pokemon.name)).toBeInTheDocument();
+      userEvent.click(screen.getByText(/próximo pokémon/i));
+    });
+
+    const allTypesButton = screen.getByText(/all/i);
+    userEvent.click(allTypesButton);
+    userEvent.click(screen.getByText(/próximo pokémon/i));
+    expect(screen.getByText(/Charmander/i)).toBeInTheDocument();
   });
 });
